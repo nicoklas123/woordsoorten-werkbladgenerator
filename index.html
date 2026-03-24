@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Werkblad Generator - Woordsoorten</title>
+<style>
+    body {
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+    .container {
+        max-width: 1600px;
+        width: 95%;
+        margin: 0 auto;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        overflow: hidden;
+        flex-grow: 1;
+    }
+    .header {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+    }
+    .header h1 { margin: 0; font-size: 2.5em; font-weight: 300; }
+    .header p { margin: 10px 0 0 0; opacity: 0.9; font-size: 1.1em; }
+    .main-content { padding: 30px; }
+    .options-section {
+        background: #f8f9fa;
+        padding: 30px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+        border: 1px solid #e9ecef;
+    }
+    .options-grid-main {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+    }
+    .option-group {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        height: 100%;
+        box-sizing: border-box;
+    }
+    .option-group h3 { margin: 0 0 15px 0; color: #495057; font-size: 1.1em; border-bottom: 2px solid #f0f2f5; padding-bottom: 8px; }
+    .checkbox-group { display: flex; flex-direction: column; gap: 10px; }
+    .checkbox-item { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+    .checkbox-item input[type="checkbox"] { width: 18px; height: 18px; accent-color: #4facfe; cursor: pointer; }
+    .number-input, .select-input {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        font-size: 16px;
+        box-sizing: border-box;
+    }
+    .field-label {
+        display: block;
+        margin-top: 15px;
+        margin-bottom: 5px;
+        font-weight: 500;
+        color: #495057;
+    }
+    .action-buttons { 
+        display: flex; 
+        gap: 15px; 
+        margin-top: 30px; 
+        justify-content: center;
+        border-top: 1px solid #eee;
+        padding-top: 25px;
+    }
+    .btn {
+        padding: 15px 40px;
+        border: none;
+        border-radius: 8px;
+        font-size: 18px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .btn-primary { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; }
+    .btn-secondary { background: white; border: 2px solid #e9ecef; color: #495057; }
+    .worksheet { background: white; padding: 40px; color: black; max-width: 850px; margin: 0 auto; }
+    .student-info { margin-bottom: 15px; font-size: 1.1em; }
+    .worksheet-title { text-align: center; margin: 20px 0; font-size: 2.2em; text-decoration: none; }
+    .assignment-list { list-style: none; padding-left: 0; margin: 20px 0; }
+    .assignment-list li { margin-bottom: 15px; line-height: 1.4; }
+    .underline-demo { text-decoration: underline; }
+    .circle-demo { 
+        border: 2px solid #000; 
+        border-radius: 50%; 
+        padding: 2px 8px; 
+        margin: 0 2px;
+        display: inline-block;
+    }
+    .highlight-demo { background-color: #ffeb3b; padding: 2px 4px; }
+    .example-box {
+        border: 2px solid #4facfe;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 25px 0;
+        background: #f0f8ff;
+        line-height: 3; 
+    }
+    .exercise-list { margin-top: 30px; }
+    .exercise-item { margin-bottom: 10px; }
+    .license-footer {
+        margin-top: 50px;
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+        font-size: 0.85em;
+        color: #666;
+        text-align: center;
+    }
+    .app-footer {
+        text-align: center;
+        padding: 20px;
+        color: white;
+        font-size: 0.9em;
+    }
+    @media print {
+        body { background: white; padding: 0; }
+        .container { box-shadow: none; border-radius: 0; max-width: 100%; width: 100%; }
+        .header, .options-section, .action-buttons, .app-footer { display: none !important; }
+        .worksheet { padding: 0; max-width: 100%; }
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Woordsoorten: werkbladgenerator</h1>
+        <p>Maak oefeningen voor lidwoord, bijvoeglijk naamwoord en zelfstandig naamwoord</p>
+    </div>
+    
+    <div class="main-content">
+        <div class="options-section">
+            <div class="options-grid-main">
+                <div class="option-group">
+                    <h3>1. Woordsoorten</h3>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item"><input type="checkbox" id="lidwoord" checked><span>Lidwoord</span></label>
+                        <label class="checkbox-item"><input type="checkbox" id="bijvoeglijk" checked><span>Bijvoeglijk nw</span></label>
+                        <label class="checkbox-item"><input type="checkbox" id="zelfstandig" checked><span>Zelfstandig nw</span></label>
+                    </div>
+                </div>
+                <div class="option-group">
+                    <h3>2. Aantal & Niveau</h3>
+                    <label class="field-label" style="margin-top: 0;">Aantal items (max 50):</label>
+                    <input type="number" id="aantalOefeningen" value="10" min="1" max="50" class="number-input">
+                    <label class="field-label">Moeilijkheidsgraad:</label>
+                    <select id="moeilijkheid" class="select-input">
+                        <option value="eenvoudig">Niveau 1 (woordgroepen)</option>
+                        <option value="makkelijk" selected>Niveau 2 (gemiddeld)</option>
+                        <option value="moeilijk">Niveau 3 (moeilijk)</option>
+                    </select>
+                </div>
+                <div class="option-group">
+                    <h3>3. Opmaak</h3>
+                    <label class="field-label" style="margin-top: 0;">Lettergrootte:</label>
+                    <select id="lettergrootte" class="select-input">
+                        <option value="14">14pt</option>
+                        <option value="16" selected>16pt</option>
+                        <option value="18">18pt</option>
+                    </select>
+                    <label class="field-label">Zinsafstand (interlinie):</label>
+                    <select id="afstand" class="select-input">
+                        <option value="1.5">1.5</option>
+                        <option value="2" selected>2.0</option>
+                        <option value="2.5">2.5</option>
+                    </select>
+                </div>
+                <div class="option-group">
+                    <h3>4. Extra opties</h3>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item"><input type="checkbox" id="voorbeeld" checked><span>Voorbeeld tonen</span></label>
+                        <label class="checkbox-item"><input type="checkbox" id="verbeterblad"><span>Verbeterblad genereren</span></label>
+                    </div>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="generateWorksheet()">Genereer Oefening</button>
+                <button class="btn btn-secondary" onclick="window.print()">Afdrukken / PDF</button>
+            </div>
+        </div>
+        <div id="worksheetContent">
+            <p style="text-align:center; color:#666; margin-top:100px; font-style:italic;">
+                Stel de opties in en klik op "Genereer Oefening".
+            </p>
+        </div>
+    </div>
+</div>
+
+<footer class="app-footer">
+    CC BY-NC-SA 4.0 NicoKlas
+</footer>
+
+<script>
+const eenvoudigLijst = ["De rode appel", "Het grote boek", "Een snelle auto", "De blauwe lucht", "Het kleine kind", "Een warme jas", "De sterke man", "Het zachte kussen", "Een ronde tafel", "De jonge hond", "Het nieuwe huis", "Een dichte deur", "De hoge boom", "Het verse brood", "Een bruine beer", "De diepe zee", "Het witte laken", "Een scherp potlood", "De lange weg", "Het volle glas", "Een blije vogel", "De grijze muis", "Het open raam", "Een zware tas", "De koude sneeuw", "Het lichte jasje", "Een vreemde man", "De houten stoel", "Het korte haar", "Een rijpe banaan", "De dikke kat", "Het gouden horloge", "Een mooie jurk", "De verre reis", "Het zwarte paard", "Een zoete kers", "De vuile vaat", "Het oude schip", "Een vlijtige leerling", "De brede rivier", "Het natte gras", "Een vrolijk lied", "De slimme vos", "Het felle licht", "Een zoute drop", "De stalen brug", "Het dichte bos", "Een rustige plek", "De zwarte nacht", "Het ijzeren hek"];
+const gemiddeldeZinnen = ["De grote hond blaft luid.", "In de klas helpt de jonge leraar.", "Een vroege vogel zingt mooi.", "Het ronde balletje rolt weg.", "Achter de stal galoppeert het zwarte paard.", "De snelle trein vertrekt stipt.", "Een gouden ring blinkt mooi.", "De rustige baby slaapt zoet.", "In de tuin speelt een kleine kat.", "Mama kookt elke dag verse soep.", "De slimme jongen maakt zijn huiswerk.", "Het warme bed ligt heerlijk.", "Een groene appel is erg lekker.", "De vrolijke kinderen lachen hard.", "Een dikke krant ligt op de mat.", "Het witte huis staat op de berg.", "De sterke man tilt de doos.", "Een nieuwe fiets glimt in de zon.", "De lange weg loopt door het bos.", "Het kleine konijn eet een wortel.", "De boze buurman roept luid.", "Een zachte handdoek is fijn.", "De blauwe auto rijdt voorbij.", "Het scherpe mes snijdt goed.", "De oude opa vertelt een verhaal.", "Een grappige clown maakt muziek.", "De koude winter komt eraan.", "De gele banaan is krom.", "Het grijze wolkje drijft weg.", "Een mooie bloem bloeit nu.", "De vlijtige bij verzamelt veel nectar.", "In de keuken staat een glanzende pan.", "De trouwe hond wacht bij de poort.", "Een spannend boek ligt op de kast.", "De grijze olifant loopt door het park.", "In de winter draagt zij een wollen sjaal.", "De vriendelijke bakker verkoopt bruin brood.", "Een kleine vlieg zit op het raam.", "De harde wind waait door de takken.", "Papa drinkt elke ochtend warme koffie.", "De jonge plant krijgt elke dag water.", "Een houten vlot drijft op de beek.", "De paarse bloem ruikt heel erg lekker.", "In de schuur staat een oude tractor.", "De luie kat ligt op de zachte mat.", "Een zilveren lepel valt op de grond.", "De donkere wolk voorspelt een flinke bui.", "In het diepe water zwemt een grote vis.", "De grappige film duurt bijna twee uur.", "Een felle zon schijnt op het strand."];
+const moeilijkeZinnen = ["De prestigieuze ceremonie vond plaats in het elegante theater.", "Rond de middeleeuwse stadsmuren groeien de wilde, kleurrijke bloemen.", "De vriendelijke, oude buurman groet de nieuwe bewoners.", "De getalenteerde, jonge kunstenaar exposeert in de prestigieuze galerie.", "Het geavanceerde, digitale apparaat verwerkt de complexe gegevens.", "De internationale delegatie bezocht de hypermoderne faciliteiten.", "Een indrukwekkend landschap strekte zich uit voor de wandelaars.", "De historische architectuur trekt veel nieuwsgierige toeristen.", "Een innovatieve oplossing werd gevonden voor het technische probleem.", "De wetenschappelijke ontdekking veranderde de moderne wereld.", "Een mysterieuze schaduw verscheen in de donkere steeg.", "De enthousiaste vrijwilligers organiseerden een succesvol evenement.", "Een zeldzame vogelsoort werd gespot in het dichte woud.", "De verfijnde keuken biedt unieke culinaire ervaringen.", "Een ambitieus project vereist een nauwkeurige voorbereiding.", "De verontrustende resultaten veroorakten grote paniek bij de onderzoekers.", "Tijdens de jaarlijkse conferentie sprak de deskundige professor uitgebreid.", "De architecturale schoonheid van de kathedraal verbaasde de toeristen.", "Een mysterieuze mist bedekte het verlaten landschap volledig.", "De overtuigende bewijslast leidde tot een onmiddellijke veroordeling.", "Onze nieuwe buurman heeft een zeer indrukwekkende verzameling boeken.", "De technologische vooruitgang biedt talloze mogelijkheden voor de toekomst.", "Een onverwachte wending in het verhaal verraste de vele lezers.", "De diplomatische relaties tussen de landen bleven uiterst gespannen.", "Een zorgvuldige analyse van de feiten is absoluut noodzakelijk.", "De biologische diversiteit in het regenwoud neemt helaas snel af.", "Een efficiënte aanpak van het probleem bespaart veel kostbare tijd.", "De artistieke expressie van de schilder werd wereldwijd gewaardeerd.", "Een grootschalige renovatie van het ziekenhuis is inmiddels begonnen.", "De politieke besluitvorming verliep dit keer uiterst moeizaam.", "Een spectaculaire zonsondergang kleurde de hemel prachtig rood.", "De economische crisis had ingrijpende gevolgen voor de bevolking.", "Een gevaarlijke situatie ontstond door de hevige sneeuwval gisteren.", "De klassieke muziek zorgde voor een zeer ontspannen sfeer.", "Een wetenschappelijk experiment vereist een uiterst nauwkeurige observatie.", "De professionele fotograaf maakte enkele schitterende portretten vandaag.", "Een formele uitnodiging werd naar alle belangrijke gasten gestuurd.", "De culturele erfgoedlocatie wordt door de overheid streng bewaakt.", "Een complexe rekensom bleek een grote uitdaging voor de klas.", "De ambitieuze plannen werden door de commissie enthousiast ontvangen.", "Een plotselinge temperatuurdaling zorgde voor gladde wegen vannacht.", "De unieke combinatie van smaken was een ware sensatie.", "Een uitgebreide handleiding wordt bij het nieuwe apparaat geleverd.", "De sociale interactie tussen de leerlingen is erg belangrijk.", "Een krachtige motor drijft de zware machine moeiteloos aan.", "De financiële rapportage moet voor het einde van de maand klaar zijn.", "Een indringende geur verspreidde zich snel door het gebouw.", "De historische ontdekking wierp een nieuw licht op het verleden.", "Een creatieve oplossing werd door de jonge stagiair aangedragen.", "De juridische procedure kan helaas meerdere jaren in beslag nemen."];
+
+const lw_list = ['de', 'het', 'een'];
+const bnw_list = ['rode', 'grote', 'snelle', 'blauwe', 'kleine', 'warme', 'sterke', 'zachte', 'ronde', 'jonge', 'nieuwe', 'nieuw', 'dichte', 'hoge', 'verse', 'bruine', 'bruin', 'diepe', 'witte', 'scherp', 'scherpe', 'lange', 'volle', 'blije', 'grijze', 'open', 'zware', 'koude', 'lichte', 'vreemde', 'houten', 'korte', 'rijpe', 'dikke', 'gouden', 'mooie', 'verre', 'zwarte', 'zoete', 'vuile', 'oude', 'vlijtige', 'brede', 'natte', 'vrolijk', 'vrolijke', 'slimme', 'felle', 'zoute', 'stalen', 'rustige', 'ijzeren', 'vroege', 'groene', 'boze', 'zilveren', 'donkere', 'grappige', 'prestigieuze', 'elegante', 'middeleeuwse', 'wilde', 'kleurrijke', 'vriendelijke', 'getalenteerde', 'geavanceerde', 'digitale', 'complexe', 'internationale', 'hypermoderne', 'indrukwekkend', 'indrukwekkende', 'historische', 'nieuwsgierige', 'innovatieve', 'technische', 'wetenschappelijke', 'wetenschappelijk', 'moderne', 'mysterieuze', 'enthousiaste', 'succesvol', 'zeldzame', 'verfijnde', 'unieke', 'culinaire', 'ambitieus', 'ambitieuze', 'nauwkeurige', 'verontrustende', 'jaarlijkse', 'deskundige', 'architecturale', 'verlaten', 'overtuigende', 'onmiddellijke', 'technologische', 'onverwachte', 'diplomatische', 'zorgvuldige', 'biologische', 'efficiënte', 'kostbare', 'artistieke', 'grootschalige', 'politieke', 'spectaculaire', 'economische', 'ingrijpende', 'gevaarlijke', 'hevige', 'klassieke', 'professionele', 'schitterende', 'formele', 'belangrijke', 'culturele', 'plotselinge', 'gladde', 'ware', 'uitgebreide', 'sociale', 'krachtige', 'financiële', 'indringende', 'creatieve', 'juridische', 'wollen', 'flinke', 'harde', 'gele', 'luie', 'paarse', 'ontspannen', 'glanzend', 'glanzende'];
+const znw_list = ['appel', 'boek', 'auto', 'lucht', 'kind', 'jas', 'man', 'kussen', 'tafel', 'hond', 'huis', 'deur', 'boom', 'brood', 'beer', 'zee', 'laken', 'potlood', 'weg', 'glas', 'vogel', 'muis', 'raam', 'tas', 'sneeuw', 'jasje', 'stoel', 'haar', 'banaan', 'kat', 'horloge', 'jurk', 'reis', 'paard', 'kers', 'vaat', 'schip', 'leerling', 'rivier', 'gras', 'lied', 'vos', 'licht', 'drop', 'brug', 'bos', 'plek', 'nacht', 'hek', 'klas', 'leraar', 'balletje', 'stal', 'trein', 'ring', 'baby', 'tuin', 'soep', 'jongen', 'huiswerk', 'bed', 'kinderen', 'krant', 'mat', 'berg', 'doos', 'fiets', 'zon', 'konijn', 'wortel', 'buurman', 'handdoek', 'mes', 'verhaal', 'clown', 'muziek', 'winter', 'wolkje', 'bloem', 'bij', 'nectar', 'keuken', 'pan', 'poort', 'kast', 'olifant', 'park', 'sjaal', 'bakker', 'vlieg', 'wind', 'takken', 'papa', 'mama', 'ochtend', 'koffie', 'plant', 'dag', 'water', 'vlot', 'met', 'beek', 'schuur', 'tractor', 'lepel', 'grond', 'wolk', 'bui', 'vis', 'film', 'uur', 'strand', 'ceremonie', 'theater', 'stadsmuren', 'bloemen', 'bewoners', 'kunstenaar', 'galerie', 'apparaat', 'gegevens', 'delegatie', 'faciliteiten', 'landschap', 'wandelaars', 'architectuur', 'toeristen', 'oplossing', 'probleem', 'wereld', 'schaduw', 'steeg', 'vrijwilligers', 'evenement', 'vogelsoort', 'woud', 'ervaringen', 'project', 'voorbereiding', 'resultaten', 'paniek', 'onderzoekers', 'conferentie', 'professor', 'schoonheid', 'kathedraal', 'mist', 'bewijslast', 'veroordeling', 'verzameling', 'boeken', 'vooruitgang', 'mogelijkheden', 'toekomst', 'wending', 'verhaal', 'lezers', 'relaties', 'landen', 'analyse', 'feiten', 'diversiteit', 'regenwoud', 'aanpak', 'tijd', 'expressie', 'schilder', 'renovatie', 'ziekenhuis', 'besluitvorming', 'keer', 'zonsondergang', 'hemel', 'crisis', 'gevolgen', 'bevolking', 'situatie', 'sneeuwval', 'sfeer', 'experiment', 'observatie', 'fotograaf', 'portretten', 'uitnodiging', 'gasten', 'erfgoedlocatie', 'overheid', 'rekensom', 'uitdaging', 'plannen', 'commissie', 'temperatuurdaling', 'wegen', 'combinatie', 'smaken', 'sensatie', 'handleiding', 'interactie', 'leerlingen', 'motor', 'machine', 'rapportage', 'einde', 'maand', 'geur', 'gebouw', 'ontdekking', 'verleden', 'stagiair', 'procedure', 'jaren'];
+
+function analyzeSentence(sentence) {
+    const rawWords = sentence.split(/\s+/);
+    return rawWords.map((word, index) => {
+        const clean = word.toLowerCase().replace(/[.,!?;:]/g, '');
+        let type = null;
+        
+        if (lw_list.includes(clean)) {
+            type = 'lw';
+        } else if (bnw_list.includes(clean)) {
+            type = 'bnw';
+        } else if (znw_list.includes(clean)) {
+            if (clean === 'bij') {
+                const prev = index > 0 ? rawWords[index-1].toLowerCase().replace(/[.,!?;:]/g, '') : '';
+                // Check of het lidwoord (de/een) ervoor staat voor 'bij' als ZNW
+                if (lw_list.includes(prev)) {
+                    type = 'znw';
+                }
+            } else {
+                type = 'znw';
+            }
+        }
+        return { word, type };
+    });
+}
+
+function generateWorksheet() {
+    let aantalInput = parseInt(document.getElementById('aantalOefeningen').value);
+    
+    if (aantalInput > 50) {
+        aantalInput = 50;
+        document.getElementById('aantalOefeningen').value = 50;
+    }
+    if (aantalInput < 1) aantalInput = 1;
+
+    const niveau = document.getElementById('moeilijkheid').value;
+    const lettergrootte = document.getElementById('lettergrootte').value;
+    const afstand = document.getElementById('afstand').value;
+    const toonVoorbeeld = document.getElementById('voorbeeld').checked;
+    const showLW = document.getElementById('lidwoord').checked;
+    const showBNW = document.getElementById('bijvoeglijk').checked;
+    const showZNW = document.getElementById('zelfstandig').checked;
+
+    let bron;
+    if (niveau === 'eenvoudig') {
+        bron = eenvoudigLijst.map(s => s.toLowerCase());
+    } else if (niveau === 'makkelijk') {
+        bron = gemiddeldeZinnen;
+    } else {
+        bron = moeilijkeZinnen;
+    }
+
+    let geselecteerd = [];
+    let tempBron = [...bron].sort(() => 0.5 - Math.random());
+    for(let i = 0; i < aantalInput; i++) {
+        geselecteerd.push(tempBron[i % tempBron.length]);
+    }
+
+    const licenseTag = `<div class="license-footer">CC BY-NC-SA 4.0 NicoKlas</div>`;
+
+    let html = `<div class="worksheet" style="font-size: ${lettergrootte}px;">
+        <div class="student-info">Naam : ____________________ &nbsp;&nbsp;&nbsp; Datum: _________________</div>
+        <h1 class="worksheet-title">Woordsoorten</h1>
+        <div style="font-weight: bold;">Opdracht: </div>
+        <ul class="assignment-list">`;
+    if (showLW) html += `<li>- Onderstreep de <span class="underline-demo">lidwoorden</span>.</li>`;
+    if (showBNW) html += `<li>- Omcirkel de <span class="circle-demo">bijvoeglijke naamwoorden</span>.</li>`;
+    if (showZNW) html += `<li>- Markeer de <span class="highlight-demo">zelfstandige naamwoorden</span> geel.</li>`;
+    html += `</ul>`;
+
+    if (toonVoorbeeld) {
+        let voorbeeldData;
+        if (niveau === 'eenvoudig') {
+            voorbeeldData = [{word: "de", type: "lw"}, {word: "kleine", type: "bnw"}, {word: "kat", type: "znw"}];
+        } else {
+            voorbeeldData = [{word: "De", type: "lw"}, {word: "kleine", type: "bnw"}, {word: "kat", type: "znw"}, {word: "speelt", type: null}, {word: "met", type: null}, {word: "een", type: "lw"}, {word: "rode", type: "bnw"}, {word: "bal.", type: "znw"}];
+        }
+        html += `<div class="example-box"><strong>Voorbeeld:</strong><br>`;
+        voorbeeldData.forEach(item => {
+            let txt = item.word;
+            if (item.type === 'lw' && showLW) txt = `<span class="underline-demo">${txt}</span>`;
+            if (item.type === 'bnw' && showBNW) txt = `<span class="circle-demo">${txt}</span>`;
+            if (item.type === 'znw' && showZNW) txt = `<span class="highlight-demo">${txt}</span>`;
+            html += txt + " ";
+        });
+        html += `</div>`;
+    }
+
+    html += `<div class="exercise-list" style="line-height: ${afstand};">`;
+    geselecteerd.forEach((zin, i) => {
+        html += `<div class="exercise-item">${i + 1}. ${zin}</div>`;
+    });
+    html += `</div>`;
+    html += licenseTag;
+
+    if (document.getElementById('verbeterblad').checked) {
+        html += `<div style="page-break-before: always; border-top: 2px dashed #000; padding-top: 20px; margin-top: 40px;">
+                 <h2 style="text-align:center;">Verbeterblad</h2>`;
+        geselecteerd.forEach((zin, i) => {
+            const analyse = analyzeSentence(zin);
+            html += `<div class="exercise-item" style="line-height: ${afstand};">${i+1}. `;
+            analyse.forEach(item => {
+                let txt = item.word;
+                if (item.type === 'lw' && showLW) txt = `<span class="underline-demo">${txt}</span>`;
+                if (item.type === 'bnw' && showBNW) txt = `<span class="circle-demo">${txt}</span>`;
+                if (item.type === 'znw' && showZNW) txt = `<span class="highlight-demo">${txt}</span>`;
+                html += txt + " ";
+            });
+            html += `</div>`;
+        });
+        html += licenseTag;
+        html += `</div>`;
+    }
+    html += `</div>`;
+    document.getElementById('worksheetContent').innerHTML = html;
+}
+</script>
+</body>
+</html>
