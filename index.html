@@ -10,16 +10,28 @@
 
         body {
             font-family: 'Verdana', sans-serif;
-            background-color: #f3f4f6;
+            /* Gevel licht greige */
+            background-color: #e5e2db; 
         }
 
-        .strak-input {
+        /* Zijbalk styling */
+        aside .config-container {
+            /* Gevel donker greige */
+            background-color: #d1cdc3; 
+            border: 1px solid #000;
+        }
+
+        /* Input styling voor leesbaarheid */
+        .strak-input, 
+        select.strak-input, 
+        input[type="number"].strak-input {
             border: 1px solid #000;
             border-radius: 0;
             padding: 0.5rem;
             font-family: 'Verdana', sans-serif;
             width: 100%;
             font-size: 0.875rem;
+            background-color: #ffffff; 
         }
 
         .woord-blok {
@@ -48,8 +60,12 @@
         }
 
         @media print {
+            /* Verberg zijbalk en andere elementen met no-print */
             .no-print { display: none !important; }
+            
+            /* Spierwitte achtergrond bij printen */
             body { background: white !important; padding: 0 !important; }
+            
             #werkblad-container { 
                 box-shadow: none !important; 
                 margin: 0 !important; 
@@ -71,7 +87,7 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-8 main-grid">
             
             <aside class="no-print space-y-6">
-                <div class="bg-white p-6 border border-black shadow-sm">
+                <div class="config-container p-6 shadow-sm">
                     <h2 class="text-xs font-bold uppercase tracking-widest mb-6 border-b border-black pb-2">Configuratie</h2>
                     
                     <div class="space-y-4">
@@ -117,7 +133,7 @@
                         <button onclick="window.print()" class="w-full border border-black text-black text-xs font-bold uppercase tracking-widest py-4 hover:bg-gray-100 transition-colors">Print PDF</button>
                     </div>
                 </div>
-                <p class="text-[10px] text-gray-400 uppercase tracking-widest text-center">CC BY-NC-SA 4.0 NicoKlas</p>
+                <p class="text-[10px] text-gray-500 uppercase tracking-widest text-center font-bold">CC BY-NC-SA 4.0 NicoKlas</p>
             </aside>
 
             <main id="werkblad-container" class="md:col-span-3 bg-white shadow-2xl min-h-[29.7cm] p-12 flex flex-col">
